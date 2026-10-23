@@ -64,12 +64,12 @@ internal static class Sparkline
 
         if (utilizationPoints.Count < 2 && memoryPoints.Count < 2)
         {
-            TextRenderer.DrawText(
+            Drawing.DrawText(
                 graphics,
                 "采样中…",
                 placeholderFont,
-                Rectangle.Round(plot),
                 Theme.MutedText,
+                Rectangle.Round(plot),
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
             graphics.Restore(state);
             return;

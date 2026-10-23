@@ -1,3 +1,4 @@
+using System.Drawing.Text;
 using GPUObserver.Config;
 using GPUObserver.Monitoring;
 
@@ -95,6 +96,18 @@ internal sealed class ServerContentPanel : ScrollableControl
         UpdateScrollSize();
     }
 
+    protected override void OnScroll(ScrollEventArgs e)
+    {
+        base.OnScroll(e);
+        Invalidate();
+    }
+
+    protected override void OnMouseWheel(MouseEventArgs e)
+    {
+        base.OnMouseWheel(e);
+        Invalidate();
+    }
+
     protected override void OnMouseEnter(EventArgs e)
     {
         base.OnMouseEnter(e);
@@ -156,6 +169,7 @@ internal sealed class ServerContentPanel : ScrollableControl
         base.OnPaint(e);
         var graphics = e.Graphics;
         graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+        graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
         graphics.TranslateTransform(AutoScrollPosition.X, AutoScrollPosition.Y);
 
         var scale = DeviceDpi / 96f;
@@ -331,7 +345,7 @@ internal sealed class ServerContentPanel : ScrollableControl
         var extraText = string.Join(" · ", extras);
         var extraWidth = string.IsNullOrEmpty(extraText)
             ? 0f
-            : TextRenderer.MeasureText(extraText, _smallFont, new Size(int.MaxValue, int.MaxValue), TextFormatFlags.NoPrefix).Width + S(4);
+            : Drawing.MeasureText(graphics, extraText, _smallFont).Width + S(4);
         var badgeRect = new RectangleF(innerX, innerY, S(44), S(18));
         Drawing.FillRounded(graphics, Theme.AccentSoft, badgeRect, S(6));
         Drawing.DrawText(graphics, $"GPU {gpu.Index}", _smallFont, Theme.Accent, Rectangle.Round(badgeRect), TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);

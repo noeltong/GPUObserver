@@ -359,7 +359,7 @@ internal sealed class PopupForm : Form
 
         var scale = Math.Max(0.5, DeviceDpi / 96.0);
         var contentHeight = _content.PreferredContentHeight / scale;
-        return (int)Math.Clamp(contentHeight + 97, 340, 620);
+        return (int)Math.Clamp(contentHeight + 97, 340, 960);
     }
 
     private void ApplySizeAndPosition()
