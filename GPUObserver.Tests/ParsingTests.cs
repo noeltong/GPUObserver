@@ -1,3 +1,4 @@
+using System.Text;
 using GPUObserver.Monitoring;
 using GPUObserver.Monitoring.Parsing;
 
@@ -223,11 +224,29 @@ public class ParsingTests
     }
 
     [Fact]
+    public void MainCommand_RunsPosixScriptThroughShForFishLoginShell()
+    {
+        var command = ProbeCommand.BuildMainCommand();
+        const string prefix = "printf '%s' '";
+
+        Assert.StartsWith(prefix, command);
+        Assert.EndsWith("' | base64 -d | /bin/sh", command);
+
+        var start = prefix.Length;
+        var end = command.IndexOf('\'', start);
+        var encoded = command[start..end];
+
+        Assert.Matches("^[A-Za-z0-9+/=]+$", encoded);
+        Assert.Equal(ProbeCommand.MainScript, Encoding.UTF8.GetString(Convert.FromBase64String(encoded)));
+    }
+
+    [Fact]
     public void PsCommand_OnlyContainsNumericPids()
     {
         var command = ProbeCommand.BuildPsCommand(new[] { 10, 20, 20, -5, 0 });
 
         Assert.NotNull(command);
+        Assert.StartsWith("env LC_ALL=C ps", command);
         Assert.Contains("-p 10,20", command);
         Assert.Null(ProbeCommand.BuildPsCommand(Array.Empty<int>()));
     }

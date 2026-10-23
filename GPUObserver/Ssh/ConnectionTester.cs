@@ -53,7 +53,7 @@ public static class ConnectionTester
         try
         {
             var commandResult = await session
-                .RunAsync(ProbeCommand.MainScript, cancellationToken, TimeSpan.FromSeconds(20))
+                .RunAsync(ProbeCommand.BuildMainCommand(), cancellationToken, TimeSpan.FromSeconds(20))
                 .ConfigureAwait(false);
             var probe = ProbeParser.Parse(commandResult.StandardOutput);
 

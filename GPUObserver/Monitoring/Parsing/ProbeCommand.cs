@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 
 namespace GPUObserver.Monitoring.Parsing;
 
@@ -35,6 +36,17 @@ public static class ProbeCommand
         printf '@@END@@\n'
         """;
 
+    /// <summary>
+    /// SSH servers run exec requests through the login shell, which may be fish
+    /// or another non-POSIX shell. Send the POSIX probe as base64 and run it
+    /// with /bin/sh so GPU detection does not depend on the login shell syntax.
+    /// </summary>
+    public static string BuildMainCommand()
+    {
+        var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(MainScript));
+        return $"printf '%s' '{encoded}' | base64 -d | /bin/sh";
+    }
+
     public static string? BuildPsCommand(IEnumerable<int> pids)
     {
         var normalized = pids
@@ -47,6 +59,6 @@ public static class ProbeCommand
         }
 
         var list = string.Join(",", normalized.Select(pid => pid.ToString(CultureInfo.InvariantCulture)));
-        return $"LC_ALL=C ps -o pid=,user=,comm= -p {list}";
+        return $"env LC_ALL=C ps -o pid=,user=,comm= -p {list}";
     }
 }

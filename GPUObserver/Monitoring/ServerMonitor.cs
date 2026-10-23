@@ -215,7 +215,7 @@ public sealed class ServerMonitor : IDisposable
         var session = _session ?? throw new MonitorOperationException(MonitorErrorKind.Network, "SSH 连接已断开。");
 
         var mainResult = await session
-            .RunAsync(ProbeCommand.MainScript, cancellationToken, TimeSpan.FromSeconds(20))
+            .RunAsync(ProbeCommand.BuildMainCommand(), cancellationToken, TimeSpan.FromSeconds(20))
             .ConfigureAwait(false);
         var probe = ProbeParser.Parse(mainResult.StandardOutput);
 

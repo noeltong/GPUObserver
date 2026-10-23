@@ -46,6 +46,7 @@
   - NVIDIA 驱动与 `nvidia-smi`
   - 标准 `ps`；`free` 可选
   - 一个可正常登录的 SSH 账号
+  - 登录 shell 可以是 bash、zsh、fish 等；采集脚本通过 `/bin/sh` 执行
 
 程序是每用户应用，不需要管理员权限。目标服务器不需要安装额外 Agent。
 
@@ -190,6 +191,8 @@ MonitorService ──► ServerMonitor（每台服务器一个后台循环）
         ├─ NotificationStateMachine：单卡进程退出状态机
         └─ ToastService：Windows 通知，失败时回退托盘气泡
 ```
+
+> SSH 服务端会用登录 shell 解析执行请求。为避免 fish 等非 POSIX shell 无法执行采集脚本，程序会把静态 POSIX 脚本进行 base64 编码后交给 `/bin/sh` 执行；`ps` 命令也通过 `env` 设置语言环境，不依赖登录 shell 的语法。
 
 ### 目录结构
 
