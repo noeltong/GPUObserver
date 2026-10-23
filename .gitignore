@@ -1,0 +1,25 @@
+# Build output
+bin/
+obj/
+publish/
+[Dd]ebug/
+[Rr]elease/
+
+# IDE / local user files
+.vs/
+.idea/
+*.user
+*.suo
+*.DotSettings.user
+
+# Test and tool artifacts
+TestResults/
+*.trx
+coverage/
+coverage.*
+*.log
+
+# OS files
+Thumbs.db
+desktop.ini
+.DS_Store
