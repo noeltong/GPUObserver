@@ -1,6 +1,6 @@
 param(
-    [string]$Output = (Join-Path $PSScriptRoot "..\GpuObserve\Assets\app.ico"),
-    [string]$Preview = (Join-Path $env:TEMP "gpuobserve-icon-preview.png")
+    [string]$Output = (Join-Path $PSScriptRoot "..\GPUObserver\Assets\app.ico"),
+    [string]$Preview = (Join-Path $env:TEMP "gpuobserver-icon-preview.png")
 )
 
 Add-Type -AssemblyName System.Drawing
