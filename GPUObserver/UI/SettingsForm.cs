@@ -207,8 +207,11 @@ internal sealed class SettingsForm : Form
             _serverList.Items.Clear();
             foreach (var server in _servers)
             {
+                var label = string.IsNullOrWhiteSpace(server.Name)
+                    ? server.DisplayUserHost
+                    : $"{server.Name} · {server.DisplayUserHost}";
                 var suffix = server.NotificationsEnabled ? "" : "  ·  通知关闭";
-                _serverList.Items.Add($"{server.DisplayUserHost}{suffix}");
+                _serverList.Items.Add($"{label}{suffix}");
             }
         }
         finally

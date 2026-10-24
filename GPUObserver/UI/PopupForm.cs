@@ -8,6 +8,9 @@ internal sealed class PopupForm : Form
 {
     private const int DwmwaWindowCornerPreference = 33;
     private const int DwmwcpRound = 2;
+    private const int PopupWidth = 520;
+    private const int EmptyPopupHeight = 300;
+    private const int FixedPopupHeight = 715;
 
     private readonly MonitorService _monitors;
     private readonly Func<AppConfig> _configProvider;
@@ -287,7 +290,7 @@ internal sealed class PopupForm : Form
         var items = config.Servers
             .Select(server => new TabStripItem(
                 server.Id,
-                server.DisplayHost,
+                server.DisplayLabel,
                 stateLookup.TryGetValue(server.Id, out var state) ? state.Phase : MonitorPhase.Stopped))
             .ToList();
         _tabs.SetItems(items, _selectedServerId);
@@ -352,14 +355,7 @@ internal sealed class PopupForm : Form
 
     private int CalculateLogicalHeight()
     {
-        if (_configProvider().Servers.Count == 0)
-        {
-            return 300;
-        }
-
-        var scale = Math.Max(0.5, DeviceDpi / 96.0);
-        var contentHeight = _content.PreferredContentHeight / scale;
-        return (int)Math.Clamp(contentHeight + 97, 340, 960);
+        return _configProvider().Servers.Count == 0 ? EmptyPopupHeight : FixedPopupHeight;
     }
 
     private void ApplySizeAndPosition()
@@ -373,7 +369,7 @@ internal sealed class PopupForm : Form
 
         var logicalHeight = CalculateLogicalHeight();
         var margin = (int)Math.Round(10 * scale);
-        var width = (int)Math.Round(428 * scale);
+        var width = (int)Math.Round(PopupWidth * scale);
         var height = (int)Math.Round(logicalHeight * scale);
         width = Math.Min(width, Math.Max((int)(260 * scale), workingArea.Width - margin * 2));
         height = Math.Min(height, Math.Max((int)(220 * scale), workingArea.Height - margin * 2));

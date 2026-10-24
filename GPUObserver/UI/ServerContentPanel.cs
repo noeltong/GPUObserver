@@ -209,10 +209,14 @@ internal sealed class ServerContentPanel : ScrollableControl
             DrawRamCard(graphics, x, ref y, width, latest.Ram);
         }
 
+        var gpuAreaStartY = y;
         foreach (var gpu in latest.Gpus.OrderBy(item => item.Index))
         {
             DrawGpuCard(graphics, x, ref y, width, scale, gpu, latest);
         }
+
+        var minimumGpuAreaHeight = 3 * (S(158) + S(10));
+        y = Math.Max(y, gpuAreaStartY + minimumGpuAreaHeight);
 
         DrawProcesses(graphics, x, ref y, width, scale, latest);
     }
@@ -359,22 +363,22 @@ internal sealed class ServerContentPanel : ScrollableControl
         var nameRect = new RectangleF(innerX + S(52), innerY, innerWidth - S(52) - extraWidth - S(8), S(18));
         Drawing.DrawText(graphics, gpu.Name, _gpuNameFont, Theme.Text, Rectangle.Round(nameRect), TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.SingleLine);
 
-        var utilLabel = new RectangleF(innerX, innerY + S(27), S(46), S(16));
-        Drawing.DrawText(graphics, "利用率", _labelFont, Theme.SecondaryText, Rectangle.Round(utilLabel), TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
-        var utilPercentRect = new RectangleF(innerX + innerWidth - S(46), innerY + S(27), S(46), S(16));
-        Drawing.DrawText(graphics, Drawing.FormatPercent(gpu.UtilizationPercent), _valueFont, Theme.Text, Rectangle.Round(utilPercentRect), TextFormatFlags.Right | TextFormatFlags.VerticalCenter);
-        var utilBar = new RectangleF(innerX + S(50), innerY + S(32), innerWidth - S(50) - S(54), S(6));
-        UsageBar.Draw(graphics, utilBar, gpu.UtilizationPercent, Theme.Accent);
-
-        var memLabel = new RectangleF(innerX, innerY + S(48), S(46), S(16));
+        var memLabel = new RectangleF(innerX, innerY + S(27), S(46), S(16));
         Drawing.DrawText(graphics, "显存", _labelFont, Theme.SecondaryText, Rectangle.Round(memLabel), TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
         var memText = $"{Drawing.FormatMemory(gpu.MemoryUsedMiB)} / {Drawing.FormatMemory(gpu.MemoryTotalMiB)}";
-        var memValueRect = new RectangleF(innerX + S(50), innerY + S(48), innerWidth - S(50) - S(54), S(16));
+        var memValueRect = new RectangleF(innerX + S(50), innerY + S(27), innerWidth - S(50) - S(54), S(16));
         Drawing.DrawText(graphics, memText, _smallFont, Theme.SecondaryText, Rectangle.Round(memValueRect), TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis | TextFormatFlags.SingleLine);
-        var memPercentRect = new RectangleF(innerX + innerWidth - S(46), innerY + S(48), S(46), S(16));
+        var memPercentRect = new RectangleF(innerX + innerWidth - S(46), innerY + S(27), S(46), S(16));
         Drawing.DrawText(graphics, Drawing.FormatPercent(gpu.MemoryPercent), _valueFont, Theme.Text, Rectangle.Round(memPercentRect), TextFormatFlags.Right | TextFormatFlags.VerticalCenter);
-        var memBar = new RectangleF(innerX + S(50), innerY + S(68), innerWidth - S(50) - S(54), S(6));
+        var memBar = new RectangleF(innerX + S(50), innerY + S(47), innerWidth - S(50) - S(54), S(6));
         UsageBar.Draw(graphics, memBar, gpu.MemoryPercent, Theme.MemoryColor(gpu.MemoryPercent));
+
+        var utilLabel = new RectangleF(innerX, innerY + S(58), S(46), S(16));
+        Drawing.DrawText(graphics, "利用率", _labelFont, Theme.SecondaryText, Rectangle.Round(utilLabel), TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
+        var utilPercentRect = new RectangleF(innerX + innerWidth - S(46), innerY + S(58), S(46), S(16));
+        Drawing.DrawText(graphics, Drawing.FormatPercent(gpu.UtilizationPercent), _valueFont, Theme.Text, Rectangle.Round(utilPercentRect), TextFormatFlags.Right | TextFormatFlags.VerticalCenter);
+        var utilBar = new RectangleF(innerX + S(50), innerY + S(62), innerWidth - S(50) - S(54), S(6));
+        UsageBar.Draw(graphics, utilBar, gpu.UtilizationPercent, Theme.Accent);
 
         var chartRect = new RectangleF(innerX, innerY + S(82), innerWidth, S(44));
         Sparkline.Draw(graphics, chartRect, _state?.History ?? Array.Empty<ServerSnapshot>(), gpu.Index, _now, _smallFont);
@@ -613,7 +617,7 @@ internal sealed class ServerContentPanel : ScrollableControl
         {
             height += S(62);
         }
-        height += latest.Gpus.Count * (S(158) + S(10));
+        height += Math.Max(3, latest.Gpus.Count) * (S(158) + S(10));
         height += S(24);
         var rows = Math.Max(1, latest.Processes.Count);
         height += S(10) + rows * S(24) + S(10) + S(10);

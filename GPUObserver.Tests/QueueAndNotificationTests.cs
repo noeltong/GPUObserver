@@ -182,4 +182,19 @@ public class ConfigTests
 
         Assert.False(SecretProtector.TryUnprotect(tampered, out _));
     }
+
+    [Fact]
+    public void ServerConfig_DisplayLabelPrefersNameAndFallsBackToHost()
+    {
+        var server = new ServerConfig { Host = "10.0.0.5", Username = "alice" };
+
+        Assert.Equal("10.0.0.5", server.DisplayLabel);
+        server.Name = "训练机";
+        Assert.Equal("训练机", server.DisplayLabel);
+        Assert.Equal("训练机", server.Clone().Name);
+        server.Name = "   ";
+        Assert.Equal("10.0.0.5", server.DisplayLabel);
+        server.Port = 2222;
+        Assert.Equal("10.0.0.5:2222", server.DisplayLabel);
+    }
 }

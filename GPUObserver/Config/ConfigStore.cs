@@ -82,6 +82,7 @@ public static class ConfigStore
         var ids = new HashSet<Guid>();
         foreach (var server in config.Servers)
         {
+            server.Name = string.IsNullOrWhiteSpace(server.Name) ? null : server.Name.Trim();
             server.Host = (server.Host ?? "").Trim();
             server.Username = (server.Username ?? "").Trim();
             server.PrivateKeyPath = string.IsNullOrWhiteSpace(server.PrivateKeyPath) ? null : server.PrivateKeyPath.Trim();

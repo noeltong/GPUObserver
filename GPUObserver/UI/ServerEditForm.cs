@@ -6,6 +6,7 @@ namespace GPUObserver.UI;
 internal sealed class ServerEditForm : Form
 {
     private readonly ServerConfig? _existing;
+    private readonly TextBox _name = new();
     private readonly TextBox _host = new();
     private readonly NumericUpDown _port = new();
     private readonly TextBox _username = new();
@@ -45,16 +46,16 @@ internal sealed class ServerEditForm : Form
         AutoScaleMode = AutoScaleMode.Dpi;
         BackColor = Theme.WindowBackground;
         Font = Theme.UiFont(9f);
-        ClientSize = new Size(600, 552);
+        ClientSize = new Size(600, 588);
 
-        _passwordLabel = MakeLabel("密码", 24, 198);
-        _keyLabel = MakeLabel("私钥文件", 24, 198);
-        _passphraseLabel = MakeLabel("私钥口令", 24, 234);
-        _browse = MakeButton("浏览…", 428, 194, 70, 26);
-        _save = MakeButton("保存", 480, 500, 96, 34, primary: true);
-        _cancel = MakeButton("取消", 384, 500, 86, 34);
-        _clearFingerprint = MakeButton("重新信任", 428, 306, 148, 26);
-        _test = MakeButton("测试连接", 120, 346, 110, 32);
+        _passwordLabel = MakeLabel("密码", 24, 234);
+        _keyLabel = MakeLabel("私钥文件", 24, 234);
+        _passphraseLabel = MakeLabel("私钥口令", 24, 270);
+        _browse = MakeButton("浏览…", 428, 230, 70, 26);
+        _save = MakeButton("保存", 480, 536, 96, 34, primary: true);
+        _cancel = MakeButton("取消", 384, 536, 86, 34);
+        _clearFingerprint = MakeButton("重新信任", 428, 342, 148, 26);
+        _test = MakeButton("测试连接", 120, 382, 110, 32);
 
         AcceptButton = _save;
         CancelButton = _cancel;
@@ -79,12 +80,17 @@ internal sealed class ServerEditForm : Form
         };
         Controls.Add(subtitle);
 
-        MakeLabel("主机 / IP", 24, 86);
-        ConfigureTextBox(_host, 120, 82, 456);
+        MakeLabel("名称（可选）", 24, 86);
+        ConfigureTextBox(_name, 120, 82, 456);
+        _name.PlaceholderText = "留空则标签显示主机/IP";
+        Controls.Add(_name);
+
+        MakeLabel("主机 / IP", 24, 122);
+        ConfigureTextBox(_host, 120, 118, 456);
         Controls.Add(_host);
 
-        MakeLabel("端口", 24, 122);
-        _port.Location = new Point(120, 118);
+        MakeLabel("端口", 24, 158);
+        _port.Location = new Point(120, 154);
         _port.Size = new Size(80, 26);
         _port.Minimum = 1;
         _port.Maximum = 65535;
@@ -93,12 +99,12 @@ internal sealed class ServerEditForm : Form
         _port.Font = Theme.UiFont(9f);
         Controls.Add(_port);
 
-        MakeLabel("用户名", 216, 122);
-        ConfigureTextBox(_username, 288, 118, 288);
+        MakeLabel("用户名", 216, 158);
+        ConfigureTextBox(_username, 288, 154, 288);
         Controls.Add(_username);
 
-        MakeLabel("认证方式", 24, 158);
-        _authType.Location = new Point(120, 154);
+        MakeLabel("认证方式", 24, 194);
+        _authType.Location = new Point(120, 190);
         _authType.Size = new Size(160, 26);
         _authType.DropDownStyle = ComboBoxStyle.DropDownList;
         _authType.Font = Theme.UiFont(9f);
@@ -106,38 +112,38 @@ internal sealed class ServerEditForm : Form
         Controls.Add(_authType);
 
         Controls.Add(_passwordLabel);
-        ConfigureTextBox(_password, 120, 194, 340);
+        ConfigureTextBox(_password, 120, 230, 340);
         _password.UseSystemPasswordChar = true;
         Controls.Add(_password);
         _showPassword.Text = "显示";
         _showPassword.AutoSize = true;
-        _showPassword.Location = new Point(470, 197);
+        _showPassword.Location = new Point(470, 233);
         _showPassword.Font = Theme.UiFont(8.25f);
         Controls.Add(_showPassword);
 
         Controls.Add(_keyLabel);
-        ConfigureTextBox(_keyPath, 120, 194, 300);
+        ConfigureTextBox(_keyPath, 120, 230, 300);
         Controls.Add(_keyPath);
         Controls.Add(_browse);
         Controls.Add(_passphraseLabel);
-        ConfigureTextBox(_passphrase, 120, 230, 340);
+        ConfigureTextBox(_passphrase, 120, 266, 340);
         _passphrase.UseSystemPasswordChar = true;
         Controls.Add(_passphrase);
         _showPassphrase.Text = "显示";
         _showPassphrase.AutoSize = true;
-        _showPassphrase.Location = new Point(470, 233);
+        _showPassphrase.Location = new Point(470, 269);
         _showPassphrase.Font = Theme.UiFont(8.25f);
         Controls.Add(_showPassphrase);
 
         _notifications.Text = "在 GPU 空闲时通知我（当前用户进程全部退出）";
         _notifications.AutoSize = true;
-        _notifications.Location = new Point(24, 274);
+        _notifications.Location = new Point(24, 310);
         _notifications.Font = Theme.UiFont(8.75f);
         _notifications.Checked = true;
         Controls.Add(_notifications);
 
-        MakeLabel("主机密钥", 24, 310);
-        ConfigureTextBox(_fingerprint, 120, 306, 300);
+        MakeLabel("主机密钥", 24, 346);
+        ConfigureTextBox(_fingerprint, 120, 342, 300);
         _fingerprint.ReadOnly = true;
         _fingerprint.BackColor = Color.White;
         _fingerprint.Font = Theme.MonoFont(8.25f);
@@ -145,14 +151,14 @@ internal sealed class ServerEditForm : Form
         Controls.Add(_clearFingerprint);
 
         Controls.Add(_test);
-        _testResult.Location = new Point(242, 342);
+        _testResult.Location = new Point(242, 378);
         _testResult.Size = new Size(334, 48);
         _testResult.Font = Theme.UiFont(8.25f);
         _testResult.ForeColor = Theme.SecondaryText;
         _testResult.AutoSize = false;
         Controls.Add(_testResult);
 
-        _error.Location = new Point(24, 394);
+        _error.Location = new Point(24, 430);
         _error.Size = new Size(552, 20);
         _error.Font = Theme.UiFont(8.25f);
         _error.ForeColor = Theme.Red;
@@ -163,7 +169,7 @@ internal sealed class ServerEditForm : Form
         {
             Text = "密码与口令使用 Windows DPAPI 加密保存；私钥只保存路径，解锁后的私钥仅存在于当前进程内存中。",
             AutoSize = false,
-            Location = new Point(24, 420),
+            Location = new Point(24, 456),
             Size = new Size(552, 34),
             Font = Theme.UiFont(8.25f),
             ForeColor = Theme.MutedText
@@ -215,6 +221,7 @@ internal sealed class ServerEditForm : Form
 
         if (_existing is not null)
         {
+            _name.Text = _existing.Name ?? "";
             _host.Text = _existing.Host;
             _port.Value = Math.Clamp(_existing.Port, 1, 65535);
             _username.Text = _existing.Username;
@@ -461,6 +468,7 @@ internal sealed class ServerEditForm : Form
 
         try
         {
+            config.Name = string.IsNullOrWhiteSpace(_name.Text) ? null : _name.Text.Trim();
             config.Host = host;
             config.Port = (int)_port.Value;
             config.Username = username;

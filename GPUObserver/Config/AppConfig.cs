@@ -29,6 +29,7 @@ public sealed class AppConfig
 public sealed class ServerConfig
 {
     public Guid Id { get; set; } = Guid.NewGuid();
+    public string? Name { get; set; }
     public string Host { get; set; } = "";
     public int Port { get; set; } = 22;
     public string Username { get; set; } = "";
@@ -45,9 +46,13 @@ public sealed class ServerConfig
     [JsonIgnore]
     public string DisplayUserHost => $"{Username}@{DisplayHost}";
 
+    [JsonIgnore]
+    public string DisplayLabel => string.IsNullOrWhiteSpace(Name) ? DisplayHost : Name.Trim();
+
     public ServerConfig Clone() => new()
     {
         Id = Id,
+        Name = Name,
         Host = Host,
         Port = Port,
         Username = Username,
