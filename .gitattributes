@@ -1,0 +1,16 @@
+# 默认交给 git 处理换行（Windows 检出 CRLF）
+* text=auto
+
+# 远程 Linux 上执行的 shell 脚本必须保持 LF：
+# probe_main.sh 经 include_str! 编译进程序并原样发到服务器执行，
+# 一旦变成 CRLF，shebang 和每条命令都会带 \r 而失败。
+*.sh text eol=lf
+
+# 二进制资源不做换行转换
+*.ico binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.exe binary
+*.dll binary
